@@ -47,25 +47,20 @@ exports.signup = function(req, res) {
  * Signin after passport authentication
  */
 exports.signin = function(req, res, next) {
+
+	// authenticate using the local-token strategy
 	passport.authenticate('local-token', function(err, user, info) {
 		if (err || !user) {
 			res.status(400).send(info);
 		} else {
-			// Remove sensitive data before login
+
+			// Remove sensitive data before returning
 			user.password = undefined;
 			user.salt = undefined;
 
+			// return the user object (contains loginToken)
 			res.json(user);
 
-			/*
-			req.login(user, function(err) {
-				if (err) {
-					res.status(400).send(err);
-				} else {
-					res.json(user);
-				}
-			});
-			*/
 		}
 	})(req, res, next);
 };
@@ -102,7 +97,6 @@ exports.signout = function(req, res) {
 		}
 	});
 
-	//res.redirect('/');
 };
 
 /**

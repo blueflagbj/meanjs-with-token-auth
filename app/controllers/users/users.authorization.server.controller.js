@@ -59,7 +59,7 @@ exports.requiresLoginToken = function(req, res, next) {
 			});
 		}
 
-		// bind user object to request
+		// bind user object to request and continue
 		req.user = user;
 		next();
 	});

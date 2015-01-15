@@ -10,13 +10,12 @@ module.exports = function(app) {
 	// Article Routes
 	app.route('/articles')
 		.get(articles.list)
-		//.post(users.requiresLogin, articles.create);
-		.post(users.requiresLoginToken, articles.create);
+		.post(users.requiresLoginToken, articles.create); // authenticate using new requiresLoginToken middlewear
 
 	app.route('/articles/:articleId')
 		.get(articles.read)
-		.put(users.requiresLoginToken, articles.hasAuthorization, articles.update)
-		.delete(users.requiresLoginToken, articles.hasAuthorization, articles.delete);
+		.put(users.requiresLoginToken, articles.hasAuthorization, articles.update)		// authenticate using new requiresLoginToken middlewear
+		.delete(users.requiresLoginToken, articles.hasAuthorization, articles.delete);	// authenticate using new requiresLoginToken middlewear
 
 	// Finish by binding the article middleware
 	app.param('articleId', articles.articleByID);

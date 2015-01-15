@@ -104,7 +104,7 @@ var UserSchema = new Schema({
 UserSchema.pre('save', function(next) {
 	if (this.password && this.password.length > 6) {
 
-		// salt only exists after signing up. only generate and hash password once
+		// if a salt is already generated, do not do it again
 		if(!this.salt){
 			this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');	
 			this.password = this.hashPassword(this.password);

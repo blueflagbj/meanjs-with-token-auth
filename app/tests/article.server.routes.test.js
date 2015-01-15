@@ -55,6 +55,7 @@ describe('Article CRUD tests', function() {
 				// Handle signin error
 				if (signinErr) done(signinErr);
 
+				// attach login token to the article 
 				var loginToken = signinRes.body.loginToken;
 				var articleAug = _.extend(article, {loginToken: loginToken});
 
@@ -110,6 +111,7 @@ describe('Article CRUD tests', function() {
 				// Handle signin error
 				if (signinErr) done(signinErr);
 
+				// attach loginToken to the article
 				var loginToken = signinRes.body.loginToken;
 				var articleAug = _.extend(article, {loginToken: loginToken});
 
@@ -138,6 +140,7 @@ describe('Article CRUD tests', function() {
 				// Handle signin error
 				if (signinErr) done(signinErr);
 
+				// attach loginToken to the article
 				var loginToken = signinRes.body.loginToken;
 				var articleAug1 = _.extend(article, {loginToken: loginToken});
 
@@ -221,6 +224,7 @@ describe('Article CRUD tests', function() {
 				// Handle signin error
 				if (signinErr) done(signinErr);
 
+				// attach loginToken to the article
 				var loginToken = signinRes.body.loginToken;
 				var articleAug1 = _.extend(article, {loginToken: loginToken});
 

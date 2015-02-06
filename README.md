@@ -95,50 +95,54 @@ var UserSchema = new Schema({
 * Created a new Passport Strategy for local token-based registration(local.js)
 ```javascript
 passport.use('local-token', new LocalStrategy({
-		usernameField: 'username',
-		passwordField: 'password'	
-	},
-	function(username, password, done) {
+	usernameField: 'username',
+	passwordField: 'password'	
+},
+function(username, password, done) {
 
-		User.findOne({
-			username: username
-		}, function(err, user) {
-			if (err) {
-				console.log(err);
-				return done(err);
-			}
-			if (!user) {
-				return done(null, false, {
-					message: 'Unknown user or invalid password'
-				});
-			}
-			if (!user.authenticate(password)) {
-				return done(null, false, {
-					message: 'Unknown user or invalid password'
-				});
-			}
-
-			// generate login token
-			var tokenPayload = { 
-				username: user.username, 
-				loginExpires: user.loginExpires
-			};
-			var loginToken = jwt.encode(tokenPayload, secret);
-
-			// add token and exp date to user object
-			user.loginToken = loginToken;
-			user.loginExpires = Date.now() + (2 * 60 * 60 * 1000); // 2 hours
-
-			// save user object to update database
-			user.save(function(err) {
-				if(err){
-					done(err);
-				} else {
-					done(null, user);
-				}
+	User.findOne({
+		username: username
+	}, function(err, user) {
+		if (err) {
+			console.log(err);
+			return done(err);
+		}
+		if (!user) {
+			return done(null, false, {
+				message: 'Unknown user or invalid password'
 			});
+		}
+		if (!user.authenticate(password)) {
+			return done(null, false, {
+				message: 'Unknown user or invalid password'
+			});
+		}
+
+		// token expire time
+		var expireTime = Date.now() + (2 * 60 * 60 * 1000); // 2 hours from now
+
+		// generate login token
+		var tokenPayload = { 
+			username: user.username, 
+			loginExpires: expireTime
+		};
+
+		var loginToken = jwt.encode(tokenPayload, secret);
+
+		// add token and exp date to user object
+		user.loginToken = loginToken;
+		user.loginExpires = expireTime;
+
+		// save user object to update database
+		user.save(function(err) {
+			if(err){
+				done(err);
+			} else {
+				done(null, user);
+			}
 		});
-	}
+	});
+}
 ));
 ```
 

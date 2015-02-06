@@ -50,7 +50,9 @@ describe('User Model Route Tests:', function() {
 				.expect(200)
 				.end(function(signinErr, signinRes) {
 					// Handle signin error
-					if (signinErr) done(signinErr);
+					if (signinErr) {
+						done(signinErr);
+					}
 
 					// attach login token to the article 
 					should.exist(signinRes.body.loginToken);
@@ -63,16 +65,16 @@ describe('User Model Route Tests:', function() {
 
 		});
 
-		it('should allow a user to logout using a token', function(done){
+		it('should allow a user to logout', function(done){
 			agent.post('/auth/signout')
 				.send({loginToken: loginToken})
 				.expect(200)
 				.end(function(signoutErr, signoutRes){
+
+					// check for the correct signout message
+					(signoutRes.body.message).should.equal('username successfully logged out');
 					done();
 				});
-
-				(signoutRes.message).should.equal('username successfully logged out');
-				done();
 		});
 
 		after(function(done) {

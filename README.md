@@ -18,6 +18,182 @@ Token authentication is an alternative to cookie based authentication and is has
 
 (Taken from Alberto Pose's [article](https://auth0.com/blog/2014/01/07/angularjs-authentication-with-cookies-vs-token/))
 
+## Build Instructions
+
+This guide assumes you have a MongoDB running locally on port 27017. If not, follow these [instructions](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/).
+
+* Update the local package list and download Git and Node.js 
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+sudo apt-get install -y nodejs
+```
+
+* Create a symbolic link between nodejs and node (some older programs that use node call it through 'node' instead of 'nodejs')
+
+```bash
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+```
+
+* Install Grunt Task Runner
+
+```bash
+npm install -g grunt-cli
+```
+
+* Clone the project and navigate into it
+```bash
+git clone https://github.com/castlewhitehall/meanjs-with-token-auth.git
+cd meanjs-with-token-auth/
+```
+
+* Install Node packages
+```bash
+npm install
+```
+
+## Deployment and Use
+* Run the following to deploy the server using nodemon. If files are changed, then it will automatically restart.
+```bash
+grunt
+```
+
+* tests
+```
+grunt test
+```
+
+## Additions and Modifications
+
+* Include jwt-simple where needed
+```javascript
+var jwt = require('jwt-simple');
+var secret = 'keepitquiet';
+```
+
+
+* Modified User model to include tokens (user.server.model.js)
+```javascript
+var UserSchema = new Schema({
+
+  ...
+
+	/* For user login */
+	loginToken: {
+		type: String
+	},
+	loginExpires: {
+		type: Date
+	},
+
+  ...
+
+});
+```
+
+* Created a new Passport Strategy for local token-based registration(local.js)
+```javascript
+passport.use('local-token', new LocalStrategy({
+		usernameField: 'username',
+		passwordField: 'password'	
+	},
+	function(username, password, done) {
+
+		User.findOne({
+			username: username
+		}, function(err, user) {
+			if (err) {
+				console.log(err);
+				return done(err);
+			}
+			if (!user) {
+				return done(null, false, {
+					message: 'Unknown user or invalid password'
+				});
+			}
+			if (!user.authenticate(password)) {
+				return done(null, false, {
+					message: 'Unknown user or invalid password'
+				});
+			}
+
+			// generate login token
+			var tokenPayload = { 
+				username: user.username, 
+				loginExpires: user.loginExpires
+			};
+			var loginToken = jwt.encode(tokenPayload, secret);
+
+			// add token and exp date to user object
+			user.loginToken = loginToken;
+			user.loginExpires = Date.now() + (2 * 60 * 60 * 1000); // 2 hours
+
+			// save user object to update database
+			user.save(function(err) {
+				if(err){
+					done(err);
+				} else {
+					done(null, user);
+				}
+			});
+		});
+	}
+));
+```
+
+* Created a new middlewear that requires a login token (users.authorization.server.controller.js)
+```javascript
+/**
+ * Require login token routing middleware
+ */
+exports.requiresLoginToken = function(req, res, next) {
+	// check for login token here
+	var loginToken = req.body.loginToken;
+
+	// query DB for the user corresponding to the token and act accordingly
+	User.findOne({
+		loginToken: loginToken,
+		loginExpires: {
+			$gt: Date.now()
+		}
+	}, function(err, user){
+		if(!user){
+			return res.status(401).send({
+				message: 'Token is incorrect or has expired. Please login again'
+			});
+		}
+		if(err){
+			return res.status(500).send({
+				message: 'There was an internal server error processing your login token'
+			});
+		}
+
+		// bind user object to request and continue
+		req.user = user;
+		next();
+	});
+};
+```
+
+* Modified the example Article CRUD routes to use the new token middlewear (articles.server.routes.js)
+```javascript
+module.exports = function(app) {
+	// Article Routes
+	app.route('/articles')
+		.get(articles.list)
+		.post(users.requiresLoginToken, articles.create); // authenticate using new requiresLoginToken middlewear
+
+	app.route('/articles/:articleId')
+		.get(articles.read)
+		.put(users.requiresLoginToken, articles.hasAuthorization, articles.update)		// authenticate using new requiresLoginToken middlewear
+		.delete(users.requiresLoginToken, articles.hasAuthorization, articles.delete);	// authenticate using new requiresLoginToken middlewear
+
+	// Finish by binding the article middleware
+	app.param('articleId', articles.articleByID);
+};
+```
+
 
 ## Credits
 Inspired by and built upon the great work of [MEANjs.org](http://meanjs.org/)

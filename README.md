@@ -53,6 +53,17 @@ cd meanjs-with-token-auth/
 npm install
 ```
 
+## Deployment and Use
+* Run the following to deploy the server using nodemon. If files are changed, then it will automatically restart.
+```bash
+grunt
+```
+
+* tests
+```
+grunt test
+```
+
 ## Credits
 Inspired by and built upon the great work of [MEANjs.org](http://meanjs.org/)
 The MEAN name was coined by [Valeri Karpov](http://blog.mongodb.org/post/49262866911/the-mean-stack-mongodb-expressjs-angularjs-and)

@@ -18,6 +18,40 @@ Token authentication is an alternative to cookie based authentication and is has
 
 (Taken from Alberto Pose's [article](https://auth0.com/blog/2014/01/07/angularjs-authentication-with-cookies-vs-token/))
 
+## Build Instructions
+
+This guide assumes you have a MongoDB running locally on port 27017. If not, follow these [instructions](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/).
+
+* Update the local package list and download Git and Node.js 
+
+```bash
+sudo apt-get update
+sudo apt-get install -y git
+sudo apt-get install -y nodejs
+```
+
+* Create a symbolic link between nodejs and node (some older programs that use node call it through 'node' instead of 'nodejs')
+
+```bash
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+```
+
+* Install Grunt Task Runner
+
+```bash
+npm install -g grunt-cli
+```
+
+* Clone the project and navigate into it
+```bash
+git clone https://github.com/castlewhitehall/meanjs-with-token-auth.git
+cd meanjs-with-token-auth/
+```
+
+* Install Node packages
+```bash
+npm install
+```
 
 ## Credits
 Inspired by and built upon the great work of [MEANjs.org](http://meanjs.org/)

@@ -66,7 +66,14 @@ grunt test
 
 ## Additions and Modifications
 
-* Modified User model to include tokens
+* Include jwt-simple where needed
+```javascript
+var jwt = require('jwt-simple');
+var secret = 'keepitquiet';
+```
+
+
+* Modified User model to include tokens (user.server.model.js)
 ```javascript
 var UserSchema = new Schema({
 
@@ -85,7 +92,7 @@ var UserSchema = new Schema({
 });
 ```
 
-* Created a new Passport Strategy for local token-based registration
+* Created a new Passport Strategy for local token-based registration(local.js)
 ```javascript
 passport.use('local-token', new LocalStrategy({
 		usernameField: 'username',
@@ -135,7 +142,7 @@ passport.use('local-token', new LocalStrategy({
 ));
 ```
 
-* Created a new middlewear that requires a login token
+* Created a new middlewear that requires a login token (users.authorization.server.controller.js)
 ```javascript
 /**
  * Require login token routing middleware
@@ -169,7 +176,7 @@ exports.requiresLoginToken = function(req, res, next) {
 };
 ```
 
-* Modified the example Article CRUD routes to use the new token middlewear
+* Modified the example Article CRUD routes to use the new token middlewear (articles.server.routes.js)
 ```javascript
 module.exports = function(app) {
 	// Article Routes
@@ -186,7 +193,6 @@ module.exports = function(app) {
 	app.param('articleId', articles.articleByID);
 };
 ```
-
 
 
 ## Credits

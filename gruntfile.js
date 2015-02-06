@@ -121,8 +121,8 @@ module.exports = function(grunt) {
 			}
 		},
 		concurrent: {
-			//default: ['nodemon', 'watch'],
-			default: ['exec:startServer', 'watch'],
+			default: ['nodemon', 'watch'],
+			//default: ['exec:startServer', 'watch'],
 			debug: ['nodemon', 'watch', 'node-inspector'],
 			options: {
 				logConcurrentOutput: true,

@@ -63,16 +63,20 @@ module.exports = function() {
 					});
 				}
 
+				// token expire time
+				var expireTime = Date.now() + (2 * 60 * 60 * 1000); // 2 hours from now
+
 				// generate login token
 				var tokenPayload = { 
 					username: user.username, 
-					loginExpires: user.loginExpires
+					loginExpires: expireTime
 				};
+
 				var loginToken = jwt.encode(tokenPayload, secret);
 
 				// add token and exp date to user object
 				user.loginToken = loginToken;
-				user.loginExpires = Date.now() + (2 * 60 * 60 * 1000); // 2 hours
+				user.loginExpires = expireTime;
 
 				// save user object to update database
 				user.save(function(err) {

@@ -22,12 +22,13 @@ Token authentication is an alternative to cookie based authentication and is has
 
 This guide assumes you have a MongoDB running locally on port 27017. If not, follow these [instructions](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/).
 
-* Update the local package list and download Git and Node.js 
+* Update the local package list and download Git, Node.js, and the Node Package Manager
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y git
 sudo apt-get install -y nodejs
+sudo apt-get install -y npm
 ```
 
 * Create a symbolic link between nodejs and node (some older programs that use node call it through 'node' instead of 'nodejs')

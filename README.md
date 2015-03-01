@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/castlewhitehall/meanjs-with-token-auth.png?label=ready&title=Ready)](https://waffle.io/castlewhitehall/meanjs-with-token-auth)
 [![Circle CI](https://circleci.com/gh/castlewhitehall/meanjs-with-token-auth/tree/master.svg?style=svg&circle-token=9f4d4cf9aebb2701286a3252ac5cdbe2bd1afbf9)](https://circleci.com/gh/castlewhitehall/meanjs-with-token-auth/tree/master)
 [![Dependencies Status](https://david-dm.org/castlewhitehall/meanjs-w
 ith-token-auth.svg)](https://david-dm.org/castlewhitehall/meanjs-w
